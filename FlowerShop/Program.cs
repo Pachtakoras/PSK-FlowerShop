@@ -102,7 +102,7 @@ using (var scope = app.Services.CreateScope())
         {
             Email = email,
             Address = "admin",
-            UserName = "admin",
+            UserName = email,
             FirstName = "admin",
             LastName = "admin"
         };

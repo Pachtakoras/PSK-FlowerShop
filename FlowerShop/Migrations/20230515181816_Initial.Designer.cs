@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FlowerShop.Migrations
 {
     [DbContext(typeof(FlowerContext))]
-    [Migration("20230515170402_SeedRoles")]
-    partial class SeedRoles
+    [Migration("20230515181816_Initial")]
+    partial class Initial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
