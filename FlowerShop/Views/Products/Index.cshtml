@@ -18,9 +18,12 @@
             <p>
                 @item.Price.ToString("C2")
             </p>
-            <p>
-                <a class="btn btn-primary" asp-controller="Cart" asp-action="Add" asp-route-id="@item.Id">Add to Cart</a>
-            </p>
+            @if(User.Identity?.IsAuthenticated ?? false)
+            {
+                <p>
+                    <a class="btn btn-primary" asp-controller="Cart" asp-action="Add" asp-route-id="@item.Id">Add to Cart</a>
+                </p>
+            }
         </div>
 
     }
