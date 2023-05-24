@@ -1,4 +1,6 @@
 ﻿
+using System.ComponentModel.DataAnnotations;
+
 namespace FlowerShop.Models
 {
     public class CartItem
@@ -12,6 +14,9 @@ namespace FlowerShop.Models
             get { return Quantity * Price; }
         }
         public string Image { get; set; }
+
+        [Timestamp]
+        public byte[] RowVersion { get; set; }
 
         public CartItem() { }
         public CartItem(Product product) 

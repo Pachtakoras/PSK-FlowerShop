@@ -111,7 +111,15 @@ namespace FlowerShop.Controllers
 
                 _context.Add(newOrder);
                 //_context.Entry(newOrder).State = EntityState.Detached;
-                await _context.SaveChangesAsync();
+                try
+                {
+                    await _context.SaveChangesAsync();
+                }
+                catch (DbUpdateException ex)
+                {
+                    TempData["ErrorMessage"] = "The cart was already changed. Please try again.";
+                    return RedirectToAction("Index", "Home");
+                }
                 TempData["Success"] = "Your order has been confirmed!";
 
                 HttpContext.Session.Remove("Cart");
