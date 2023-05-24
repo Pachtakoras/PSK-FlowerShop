@@ -85,7 +85,7 @@ namespace FlowerShop.Controllers
         public IActionResult Clear()
         {
             HttpContext.Session.Remove("Cart");
-            return RedirectToAction("Index");
+            return Redirect(Request.Headers["Referer"].ToString());
         }
 
     }

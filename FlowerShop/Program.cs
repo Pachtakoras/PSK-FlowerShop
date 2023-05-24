@@ -62,9 +62,7 @@ var context = app.Services.CreateScope().ServiceProvider.GetRequiredService<Flow
 SeedData.Initialize(context);
 
 
-app.MapControllerRoute(
-    name: "Areas",
-    pattern: "{area:exists}/{controller=Products}/{action=Index}/{id?}");
+
 
 app.MapControllerRoute(
     name: "products",
@@ -74,6 +72,10 @@ app.MapControllerRoute(
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
+
+app.MapControllerRoute(
+    name: "Areas",
+    pattern: "{area:exists}/{controller=Products}/{action=Index}/{id?}");
 
 app.MapRazorPages();
 

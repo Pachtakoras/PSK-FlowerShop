@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FlowerShop.Migrations
 {
     [DbContext(typeof(FlowerContext))]
-    [Migration("20230515181816_Initial")]
-    partial class Initial
+    [Migration("20230523175906_checkout")]
+    partial class checkout
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -35,8 +35,7 @@ namespace FlowerShop.Migrations
 
                     b.Property<string>("Address")
                         .IsRequired()
-                        .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()
@@ -51,13 +50,11 @@ namespace FlowerShop.Migrations
 
                     b.Property<string>("FirstName")
                         .IsRequired()
-                        .HasMaxLength(60)
-                        .HasColumnType("nvarchar(60)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("LastName")
                         .IsRequired()
-                        .HasMaxLength(60)
-                        .HasColumnType("nvarchar(60)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("LockoutEnabled")
                         .HasColumnType("bit");
@@ -121,6 +118,54 @@ namespace FlowerShop.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Categories");
+                });
+
+            modelBuilder.Entity("FlowerShop.Models.Order", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
+
+                    b.Property<string>("CustomerId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("DeliveryOption")
+                        .IsRequired()
+                        .HasMaxLength(60)
+                        .HasColumnType("nvarchar(60)");
+
+                    b.Property<int>("ItemsCount")
+                        .HasColumnType("int");
+
+                    b.Property<string>("PaymentMethod")
+                        .IsRequired()
+                        .HasMaxLength(60)
+                        .HasColumnType("nvarchar(60)");
+
+                    b.Property<decimal>("PriceTotal")
+                        .HasColumnType("decimal(18,4)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Orders");
+                });
+
+            modelBuilder.Entity("FlowerShop.Models.OrderProduct", b =>
+                {
+                    b.Property<long>("OrderId")
+                        .HasColumnType("bigint");
+
+                    b.Property<long>("ProductId")
+                        .HasColumnType("bigint");
+
+                    b.HasKey("OrderId", "ProductId");
+
+                    b.HasIndex("ProductId");
+
+                    b.ToTable("OrderProducts");
                 });
 
             modelBuilder.Entity("FlowerShop.Models.Product", b =>
@@ -290,6 +335,25 @@ namespace FlowerShop.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
+            modelBuilder.Entity("FlowerShop.Models.OrderProduct", b =>
+                {
+                    b.HasOne("FlowerShop.Models.Order", "Order")
+                        .WithMany("OrderProducts")
+                        .HasForeignKey("OrderId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("FlowerShop.Models.Product", "Product")
+                        .WithMany("OrderProducts")
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Order");
+
+                    b.Navigation("Product");
+                });
+
             modelBuilder.Entity("FlowerShop.Models.Product", b =>
                 {
                     b.HasOne("FlowerShop.Models.Category", "Category")
@@ -350,6 +414,16 @@ namespace FlowerShop.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("FlowerShop.Models.Order", b =>
+                {
+                    b.Navigation("OrderProducts");
+                });
+
+            modelBuilder.Entity("FlowerShop.Models.Product", b =>
+                {
+                    b.Navigation("OrderProducts");
                 });
 #pragma warning restore 612, 618
         }

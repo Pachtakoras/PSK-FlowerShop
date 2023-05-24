@@ -1,0 +1,64 @@
+﻿@model Order
+
+@{
+    ViewData["Title"] = "Checkout overview";
+}
+<h1>Checkout</h1>
+
+<table class="table">
+    <tr>
+        <th>Product</th>
+        <th>Quantity</th>
+        <th>Price</th>
+    </tr>
+    @{
+        var productGroups = Model.OrderProducts
+        .GroupBy(op => op.Product)
+        .Select(group => new { Product = group.Key, Quantity = group.Count() });
+    }
+
+    @foreach (var group in productGroups)
+    {
+        <tr>
+            <td>@group.Product.Name</td>
+            <td>@group.Quantity</td>
+            <td>@((group.Product.Price * @group.Quantity).ToString("C2"))</td>
+        </tr>
+    }
+</table>
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Create" enctype="multipart/form-data">
+            <input type="hidden" value="@Model.Id" asp-for="Id" />
+            <input type="hidden" value="@Model.CustomerId" asp-for="CustomerId" />
+            <input type="hidden" value="@Model.PriceTotal" asp-for="PriceTotal" />
+            <input type="hidden" value="@Model.ItemsCount" asp-for="ItemsCount" />
+            <input type="hidden" value="@Model.OrderProducts" asp-for="OrderProducts" />
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="PaymentMethod" class="control-label"></label>
+                <select class="form-control" name="PaymentMethod">
+                    <option value="Card">Pay by Card</option>
+                    <option value="Cash">Pay bay Cash</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label asp-for="DeliveryOption" class="control-label"></label>
+                <select class="form-control" name="DeliveryOption">
+                    <option value="Delivery to Address">Delivery to your Address</option>
+                    <option value="Pick up in store">Pick up in store</option>
+                </select>
+            </div>
+            <table>
+                <tr class="text-right fw-bold" colspan="3">
+                    <td></td>
+                    <td>Grand Total:</td>
+                    <td>@Model.PriceTotal.ToString("C2")</td>
+                </tr>
+            </table>
+            <div class="form-group">
+                <button type="submit" class="btn btn-primary">Submit</button>
+            </div>
+        </form>
+    </div>
+</div>
