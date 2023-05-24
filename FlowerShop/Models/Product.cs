@@ -22,7 +22,8 @@ namespace FlowerShop.Models
         [AllowNull]
         public string? Image { get; set; } = "no-image.png";
 
-        
         public Category? Category { get; set; }
+
+        public List<OrderProduct>  OrderProducts { get; set;}
     }
 }
