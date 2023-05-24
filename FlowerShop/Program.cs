@@ -1,5 +1,7 @@
 using FlowerShop.DataAccess;
 using FlowerShop.Models;
+using FlowerShop.Repositories;
+using FlowerShop.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using PSI_Food_waste.Data;
@@ -23,6 +25,9 @@ builder.Services.AddSession(options =>
     options.Cookie.IsEssential = true;
 });
 
+builder.Services.AddTransient<IProductRepo, ProductRepo>();
+builder.Services.AddTransient<ICategoryRepo, CategoryRepo>();
+builder.Services.AddTransient<IOrderRepo, OrderRepo>();
 builder.Services.AddRazorPages();
 builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
     .AddRoles<IdentityRole>()

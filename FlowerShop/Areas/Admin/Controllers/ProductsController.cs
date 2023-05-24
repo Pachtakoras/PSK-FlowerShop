@@ -1,6 +1,7 @@
 ﻿
 using FlowerShop.DataAccess;
 using FlowerShop.Models;
+using FlowerShop.Repositories;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -12,12 +13,14 @@ namespace FlowerShop.Areas.Admin.Controllers
     [Area("Admin")]
     public class ProductsController : Controller
     {
-        private readonly FlowerContext _context;
+        private readonly IProductRepo _productRepo;
+        private readonly ICategoryRepo _categoryRepo;
         private readonly IWebHostEnvironment _webHostEnvironment;
 
-        public ProductsController(FlowerContext context, IWebHostEnvironment webHostEnvironment)
+        public ProductsController(IProductRepo productRepo, ICategoryRepo categoryRepo, IWebHostEnvironment webHostEnvironment)
         {
-            _context = context;
+            _productRepo = productRepo;
+            _categoryRepo = categoryRepo;
             _webHostEnvironment = webHostEnvironment;
         }
         public async Task<IActionResult> Index(int p = 1)
@@ -25,16 +28,12 @@ namespace FlowerShop.Areas.Admin.Controllers
             int pageSize = 3;
             ViewBag.PageNumber = p;
             ViewBag.PageRange = pageSize;
-            ViewBag.TotalPages = (int)Math.Ceiling((decimal)_context.Products.Count() / pageSize);
-            return View(await _context.Products.OrderByDescending(x => x.Id)
-                .Include(p => p.Category)
-                .Skip((p - 1) * pageSize)
-                .Take(pageSize)
-                .ToListAsync());
+            ViewBag.TotalPages = (int)Math.Ceiling((decimal)_productRepo.GetCount() / pageSize);
+            return View(await _productRepo.GetProductsByPageAsync(p, pageSize));
         }
         public IActionResult Create()
         {
-            ViewBag.Categories = new SelectList(_context.Categories,"Id", "Name");
+            ViewBag.Categories = new SelectList(_categoryRepo.GetList(),"Id", "Name");
             return View();
         }
 
@@ -42,19 +41,18 @@ namespace FlowerShop.Areas.Admin.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(Product product)
         {
-            ViewBag.Categories = new SelectList(_context.Categories, "Id", "Name", product.CategoryId);
+            ViewBag.Categories = new SelectList(_categoryRepo.GetList(), "Id", "Name", product.CategoryId);
 
          
             if(ModelState.IsValid)
             {
-                var name = await _context.Products.FirstOrDefaultAsync(p => p.Name == product.Name);
+                var name = await _productRepo.GetByName(product.Name);
                 if(name != null)
                 {
                     ModelState.AddModelError("", "The product already exists");
                 
                 }
-                _context.Add(product);
-                await _context.SaveChangesAsync();
+                await _productRepo.Add(product);
                 TempData["Success"] = "The product has been added";
                 return RedirectToAction("Index");
             }
@@ -64,10 +62,8 @@ namespace FlowerShop.Areas.Admin.Controllers
 
         public async Task<IActionResult> Edit(long id)
         {
-            Product product = await _context.Products.Include(p => p.Category).FirstOrDefaultAsync(p => p.Id == id);
-            _context.Entry(product).State = EntityState.Detached;
-            _context.Entry(product.Category).State = EntityState.Detached;
-            ViewBag.Categories = new SelectList(_context.Categories, "Id", "Name", product.CategoryId);
+            Product product = await _productRepo.GetWithCategory(id);
+            ViewBag.Categories = new SelectList(_categoryRepo.GetList(), "Id", "Name", product.CategoryId);
             return View(product);
         }
 
@@ -76,12 +72,11 @@ namespace FlowerShop.Areas.Admin.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(long id, Product product)
         {
-            ViewBag.Categories = new SelectList(_context.Categories, "Id", "Name", product.CategoryId);
+            ViewBag.Categories = new SelectList(_categoryRepo.GetList(), "Id", "Name", product.CategoryId);
 
             if (ModelState.IsValid)
             {
-                _context.Products.Update(product);
-                await _context.SaveChangesAsync();
+                _productRepo.Update(product);
                 TempData["Success"] = "The product has been updated";
                 return RedirectToAction("Index");
             }
@@ -91,9 +86,8 @@ namespace FlowerShop.Areas.Admin.Controllers
 
         public async Task<IActionResult> Delete(long id)
         {
-            Product product = await _context.Products.FindAsync(id);
-            _context.Remove(product);
-            _context.SaveChanges();
+            Product product = await _productRepo.GetById(id);
+            await _productRepo.Delete(product);
             TempData["Success"] = "Product has been deleted";
             return RedirectToAction("Index");
         }
