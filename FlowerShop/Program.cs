@@ -7,11 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using PSI_Food_waste.Data;
 using Serilog.Events;
 using Serilog;
-using FlowerShop.Logging;
-using Autofac.Extras.DynamicProxy;
-using Autofac.Extensions.DependencyInjection;
 using Microsoft.Extensions.Caching.Memory;
-using Microsoft.Extensions.DependencyInjection;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -59,21 +55,6 @@ builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
     .AddRoles<IdentityRole>()
     .AddEntityFrameworkStores<FlowerContext>()
     .AddDefaultTokenProviders().AddDefaultUI();
-void ConfigureContainer(ContainerBuilder builder)
-{
-    builder.RegisterType<ProductRepo>().As<IProductRepo>()
-            .EnableInterfaceInterceptors()
-            .InstancePerDependency();
-
-    builder.RegisterType<OrderRepo>().As<IOrderRepo>()
-            .EnableInterfaceInterceptors()
-            .InstancePerDependency();
-
-    builder.RegisterType<CategoryRepo>().As<ICategoryRepo>()
-            .EnableInterfaceInterceptors()
-            .InstancePerDependency();
-}
-
 
 builder.Services.Configure<IdentityOptions>(options =>
 {

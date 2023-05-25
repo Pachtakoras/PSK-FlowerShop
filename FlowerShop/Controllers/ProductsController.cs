@@ -14,7 +14,7 @@ namespace FlowerShop.Controllers
         private readonly IProductRepo _productRepo;
         private readonly ILogger _logger;
         private readonly ICategoryRepo _categoryRepo;
-        public ProductsController(IProductRepo productRepo,, ICategoryRepo categoryRepo,  ILogger<ProductsController> logger)
+        public ProductsController(IProductRepo productRepo, ICategoryRepo categoryRepo,  ILogger<ProductsController> logger)
         {
             _productRepo = productRepo;
             _logger = logger;

@@ -18,11 +18,12 @@ namespace FlowerShop.Controllers
         private readonly ILogger _logger;
 	      private readonly IOrderRepo _orderRepo;
         private readonly IProductRepositoryDecorator _productRepo;
-        public CheckoutController(IProductRepositoryDecorator cashingRepo, SignInManager<ApplicationUser> signInManager, UserManager<ApplicationUser> userManager, ILogger<CheckoutController> logger)
+        public CheckoutController(IProductRepositoryDecorator cashingRepo, IOrderRepo orderRepo, SignInManager<ApplicationUser> signInManager, UserManager<ApplicationUser> userManager, ILogger<CheckoutController> logger)
         {
             _productRepo = cashingRepo;
             _UserManager = userManager;
 	          _logger = logger;
+            _orderRepo = orderRepo;
         }
         
         [ServiceFilter(typeof(LogMethod))]
