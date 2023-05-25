@@ -9,8 +9,8 @@ namespace FlowerShop.Controllers
 {
     public class CartController : Controller
     {
-        private readonly IProductRepo _productRepo;
-        public CartController(IProductRepo productRepo) {
+        private readonly IProductRepositoryDecorator _productRepo;
+        public CartController(IProductRepositoryDecorator productRepo) {
             _productRepo = productRepo;
         }
         public IActionResult Index()

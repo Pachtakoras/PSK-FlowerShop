@@ -5,6 +5,11 @@ using FlowerShop.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using PSI_Food_waste.Data;
+using Autofac;
+using Autofac.Extras.DynamicProxy;
+using Autofac.Extensions.DependencyInjection;
+using Microsoft.Extensions.Caching.Memory;
+using Microsoft.Extensions.DependencyInjection;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -27,12 +32,37 @@ builder.Services.AddSession(options =>
 
 builder.Services.AddTransient<IProductRepo, ProductRepo>();
 builder.Services.AddTransient<ICategoryRepo, CategoryRepo>();
+
+
 builder.Services.AddTransient<IOrderRepo, OrderRepo>();
+builder.Services.AddTransient<IProductRepositoryDecorator>(provider =>
+{
+    var repository = provider.GetRequiredService<IProductRepo>();
+    var cache = provider.GetRequiredService<IMemoryCache>();
+    return new CashingProductRepository(repository, cache);
+});
+
+
 builder.Services.AddRazorPages();
 builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
     .AddRoles<IdentityRole>()
     .AddEntityFrameworkStores<FlowerContext>()
     .AddDefaultTokenProviders().AddDefaultUI();
+void ConfigureContainer(ContainerBuilder builder)
+{
+    builder.RegisterType<ProductRepo>().As<IProductRepo>()
+            .EnableInterfaceInterceptors()
+            .InstancePerDependency();
+
+    builder.RegisterType<OrderRepo>().As<IOrderRepo>()
+            .EnableInterfaceInterceptors()
+            .InstancePerDependency();
+
+    builder.RegisterType<CategoryRepo>().As<ICategoryRepo>()
+            .EnableInterfaceInterceptors()
+            .InstancePerDependency();
+}
+
 
 builder.Services.Configure<IdentityOptions>(options =>
 {

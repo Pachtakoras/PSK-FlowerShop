@@ -13,11 +13,11 @@ namespace FlowerShop.Areas.Admin.Controllers
     [Area("Admin")]
     public class ProductsController : Controller
     {
-        private readonly IProductRepo _productRepo;
+        private readonly IProductRepositoryDecorator _productRepo;
         private readonly ICategoryRepo _categoryRepo;
         private readonly IWebHostEnvironment _webHostEnvironment;
 
-        public ProductsController(IProductRepo productRepo, ICategoryRepo categoryRepo, IWebHostEnvironment webHostEnvironment)
+        public ProductsController(IProductRepositoryDecorator productRepo, ICategoryRepo categoryRepo, IWebHostEnvironment webHostEnvironment)
         {
             _productRepo = productRepo;
             _categoryRepo = categoryRepo;

@@ -13,13 +13,13 @@ namespace FlowerShop.Controllers
     public class CheckoutController : Controller
     {
         private readonly UserManager<ApplicationUser> _UserManager;
-        private readonly IProductRepo _productRepo;
         private readonly IOrderRepo _orderRepo;
-        public CheckoutController(IProductRepo productRepo,IOrderRepo orderRepo, UserManager<ApplicationUser> userManager)
+        private readonly IProductRepositoryDecorator _productRepo;
+        public CheckoutController(IProductRepositoryDecorator cashingRepo, IOrderRepo orderRepo, UserManager<ApplicationUser> userManager)
         {
             _orderRepo = orderRepo;
-            _productRepo = productRepo;
             _UserManager = userManager;
+            _productRepo = cashingRepo;
         }
 
         public async Task<IActionResult> Index()
