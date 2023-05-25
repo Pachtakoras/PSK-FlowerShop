@@ -1,5 +1,6 @@
 ﻿
 using FlowerShop.DataAccess;
+using FlowerShop.Logging;
 using FlowerShop.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -10,10 +11,13 @@ namespace FlowerShop.Controllers
     {
 
         private readonly FlowerContext _context;
-        public ProductsController(FlowerContext context)
+        private readonly ILogger _logger;
+        public ProductsController(FlowerContext context, ILogger<ProductsController> logger)
         {
             _context = context;
+            _logger = logger;
         }
+        [ServiceFilter(typeof(LogMethod))]
         public async Task<IActionResult> Index(string categorySlug = "", int p = 1)
         {
             int pageSize = 3;

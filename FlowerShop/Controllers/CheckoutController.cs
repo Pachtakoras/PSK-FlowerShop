@@ -1,5 +1,6 @@
 ﻿using FlowerShop.DataAccess;
 using FlowerShop.DataAccess.Infrastructure;
+using FlowerShop.Logging;
 using FlowerShop.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -13,15 +14,18 @@ namespace FlowerShop.Controllers
         private readonly SignInManager<ApplicationUser> _SignInManager;
         private readonly UserManager<ApplicationUser> _UserManager;
         private readonly FlowerContext _context;
+        private readonly ILogger _logger;
 
         public Order order;
-        public CheckoutController(FlowerContext context, SignInManager<ApplicationUser> signInManager, UserManager<ApplicationUser> userManager)
+        public CheckoutController(FlowerContext context, SignInManager<ApplicationUser> signInManager, UserManager<ApplicationUser> userManager, ILogger<CheckoutController> logger)
         {
             _context = context;
             _SignInManager = signInManager;
             _UserManager = userManager;
+            _logger = logger;
         }
 
+        [ServiceFilter(typeof(LogMethod))]
         public async Task<IActionResult> Index()
         {
             List<CartItem> cart = HttpContext.Session.GetJson<List<CartItem>>("Cart") ?? new List<CartItem>();

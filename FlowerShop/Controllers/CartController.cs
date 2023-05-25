@@ -1,5 +1,6 @@
 ﻿using FlowerShop.DataAccess;
 using FlowerShop.DataAccess.Infrastructure;
+using FlowerShop.Logging;
 using FlowerShop.Models;
 using FlowerShop.Models.ViewModels;
 using Microsoft.AspNetCore.Mvc;
@@ -9,9 +10,13 @@ namespace FlowerShop.Controllers
     public class CartController : Controller
     {
         private readonly FlowerContext _context;
-        public CartController(FlowerContext context) {
+        private readonly ILogger _logger;
+        public CartController(FlowerContext context, ILogger<CartController> logger) {
             _context = context;
+            _logger = logger;
         }
+
+        [ServiceFilter(typeof(LogMethod))]
         public IActionResult Index()
         {
             List<CartItem> cart = HttpContext.Session.GetJson<List<CartItem>>("Cart") ?? new List<CartItem>();

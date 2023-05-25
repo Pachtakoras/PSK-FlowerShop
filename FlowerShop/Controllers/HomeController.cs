@@ -1,4 +1,5 @@
-﻿using FlowerShop.Models;
+﻿using FlowerShop.Logging;
+using FlowerShop.Models;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 
@@ -13,11 +14,11 @@ namespace FlowerShop.Controllers
             _logger = logger;
         }
 
+        [ServiceFilter(typeof(LogMethod))]
         public IActionResult Index()
         {
             return View();
         }
-
         public IActionResult Privacy()
         {
             return View();
