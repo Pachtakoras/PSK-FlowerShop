@@ -3,16 +3,17 @@ using FlowerShop.DataAccess.Infrastructure;
 using FlowerShop.Logging;
 using FlowerShop.Models;
 using FlowerShop.Models.ViewModels;
+using FlowerShop.Repositories;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FlowerShop.Controllers
 {
     public class CartController : Controller
     {
-        private readonly FlowerContext _context;
-        private readonly ILogger _logger;
-        public CartController(FlowerContext context, ILogger<CartController> logger) {
-            _context = context;
+        private readonly IProductRepositoryDecorator _productRepo;
+	      private readonly ILogger _logger;
+        public CartController(IProductRepositoryDecorator productRepo, ILogger<CartController> logger) {
+            _productRepo = productRepo;
             _logger = logger;
         }
 
@@ -31,7 +32,7 @@ namespace FlowerShop.Controllers
         [ServiceFilter(typeof(LogMethod))]
         public async Task<IActionResult> Add(long id)
         {
-            Product product = await _context.Products.FindAsync(id);
+            Product product = await _productRepo.GetById(id);
             List<CartItem> cart = HttpContext.Session.GetJson<List<CartItem>>("Cart") ?? new List<CartItem>();
 
             CartItem cartItem = cart.Where(p => p.ProductId == id).FirstOrDefault();
