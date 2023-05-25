@@ -1,5 +1,6 @@
 ﻿
 using FlowerShop.DataAccess;
+using FlowerShop.Logging;
 using FlowerShop.Models;
 using FlowerShop.Repositories;
 using FlowerShop.Services;
@@ -11,12 +12,15 @@ namespace FlowerShop.Controllers
     public class ProductsController : Controller
     {
         private readonly IProductRepo _productRepo;
+        private readonly ILogger _logger;
         private readonly ICategoryRepo _categoryRepo;
-        public ProductsController(IProductRepo productRepo, ICategoryRepo categoryRepo)
+        public ProductsController(IProductRepo productRepo,, ICategoryRepo categoryRepo,  ILogger<ProductsController> logger)
         {
             _productRepo = productRepo;
+            _logger = logger;
             _categoryRepo = categoryRepo;
         }
+        [ServiceFilter(typeof(LogMethod))]
         public async Task<IActionResult> Index(string categorySlug = "", int p = 1)
         {
             int pageSize = 3;

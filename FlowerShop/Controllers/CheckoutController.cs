@@ -1,5 +1,6 @@
 ﻿using FlowerShop.DataAccess;
 using FlowerShop.DataAccess.Infrastructure;
+using FlowerShop.Logging;
 using FlowerShop.Models;
 using FlowerShop.Repositories;
 using FlowerShop.Services;
@@ -13,15 +14,18 @@ namespace FlowerShop.Controllers
     public class CheckoutController : Controller
     {
         private readonly UserManager<ApplicationUser> _UserManager;
-        private readonly IOrderRepo _orderRepo;
+        private readonly FlowerContext _context;
+        private readonly ILogger _logger;
+	      private readonly IOrderRepo _orderRepo;
         private readonly IProductRepositoryDecorator _productRepo;
-        public CheckoutController(IProductRepositoryDecorator cashingRepo, IOrderRepo orderRepo, UserManager<ApplicationUser> userManager)
+        public CheckoutController(IProductRepositoryDecorator cashingRepo, SignInManager<ApplicationUser> signInManager, UserManager<ApplicationUser> userManager, ILogger<CheckoutController> logger)
         {
-            _orderRepo = orderRepo;
-            _UserManager = userManager;
             _productRepo = cashingRepo;
+            _UserManager = userManager;
+	          _logger = logger;
         }
-
+        
+        [ServiceFilter(typeof(LogMethod))]
         public async Task<IActionResult> Index()
         {
             List<CartItem> cart = HttpContext.Session.GetJson<List<CartItem>>("Cart") ?? new List<CartItem>();
@@ -57,6 +61,7 @@ namespace FlowerShop.Controllers
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [ServiceFilter(typeof(LogMethod))]
         public async Task<IActionResult> Create(Order order)
         {
 

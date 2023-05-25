@@ -1,5 +1,6 @@
 ﻿using FlowerShop.DataAccess;
 using FlowerShop.DataAccess.Infrastructure;
+using FlowerShop.Logging;
 using FlowerShop.Models;
 using FlowerShop.Models.ViewModels;
 using FlowerShop.Repositories;
@@ -10,9 +11,13 @@ namespace FlowerShop.Controllers
     public class CartController : Controller
     {
         private readonly IProductRepositoryDecorator _productRepo;
-        public CartController(IProductRepositoryDecorator productRepo) {
+	      private readonly ILogger _logger;
+        public CartController(IProductRepositoryDecorator productRepo, ILogger<CartController> logger) {
             _productRepo = productRepo;
+            _logger = logger;
         }
+
+        [ServiceFilter(typeof(LogMethod))]
         public IActionResult Index()
         {
             List<CartItem> cart = HttpContext.Session.GetJson<List<CartItem>>("Cart") ?? new List<CartItem>();
@@ -24,7 +29,7 @@ namespace FlowerShop.Controllers
             };
             return View(viewModel);
         }
-
+        [ServiceFilter(typeof(LogMethod))]
         public async Task<IActionResult> Add(long id)
         {
             Product product = await _productRepo.GetById(id);
@@ -43,6 +48,7 @@ namespace FlowerShop.Controllers
             TempData["Success"] = "The product has been added!";
             return Redirect(Request.Headers["Referer"].ToString());
         }
+        [ServiceFilter(typeof(LogMethod))]
         public async Task<IActionResult> Decrease(long id)
         {
             List<CartItem> cart = HttpContext.Session.GetJson<List<CartItem>>("Cart");
@@ -66,6 +72,7 @@ namespace FlowerShop.Controllers
             TempData["Success"] = "The product was decreased!";
             return RedirectToAction("Index");
         }
+        [ServiceFilter(typeof(LogMethod))]
         public async Task<IActionResult> Remove(long id)
         {
             List<CartItem> cart = HttpContext.Session.GetJson<List<CartItem>>("Cart");
@@ -83,6 +90,7 @@ namespace FlowerShop.Controllers
             TempData["Success"] = "The product has been Removed!";
             return RedirectToAction("Index");
         }
+        [ServiceFilter(typeof(LogMethod))]
         public IActionResult Clear()
         {
             HttpContext.Session.Remove("Cart");
