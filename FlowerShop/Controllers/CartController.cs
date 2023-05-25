@@ -2,15 +2,16 @@
 using FlowerShop.DataAccess.Infrastructure;
 using FlowerShop.Models;
 using FlowerShop.Models.ViewModels;
+using FlowerShop.Repositories;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FlowerShop.Controllers
 {
     public class CartController : Controller
     {
-        private readonly FlowerContext _context;
-        public CartController(FlowerContext context) {
-            _context = context;
+        private readonly IProductRepositoryDecorator _productRepo;
+        public CartController(IProductRepositoryDecorator productRepo) {
+            _productRepo = productRepo;
         }
         public IActionResult Index()
         {
@@ -26,7 +27,7 @@ namespace FlowerShop.Controllers
 
         public async Task<IActionResult> Add(long id)
         {
-            Product product = await _context.Products.FindAsync(id);
+            Product product = await _productRepo.GetById(id);
             List<CartItem> cart = HttpContext.Session.GetJson<List<CartItem>>("Cart") ?? new List<CartItem>();
 
             CartItem cartItem = cart.Where(p => p.ProductId == id).FirstOrDefault();

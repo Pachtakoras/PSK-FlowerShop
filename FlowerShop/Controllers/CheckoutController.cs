@@ -1,6 +1,8 @@
 ﻿using FlowerShop.DataAccess;
 using FlowerShop.DataAccess.Infrastructure;
 using FlowerShop.Models;
+using FlowerShop.Repositories;
+using FlowerShop.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -10,16 +12,14 @@ namespace FlowerShop.Controllers
 {
     public class CheckoutController : Controller
     {
-        private readonly SignInManager<ApplicationUser> _SignInManager;
         private readonly UserManager<ApplicationUser> _UserManager;
-        private readonly FlowerContext _context;
-
-        public Order order;
-        public CheckoutController(FlowerContext context, SignInManager<ApplicationUser> signInManager, UserManager<ApplicationUser> userManager)
+        private readonly IOrderRepo _orderRepo;
+        private readonly IProductRepositoryDecorator _productRepo;
+        public CheckoutController(IProductRepositoryDecorator cashingRepo, IOrderRepo orderRepo, UserManager<ApplicationUser> userManager)
         {
-            _context = context;
-            _SignInManager = signInManager;
+            _orderRepo = orderRepo;
             _UserManager = userManager;
+            _productRepo = cashingRepo;
         }
 
         public async Task<IActionResult> Index()
@@ -31,7 +31,7 @@ namespace FlowerShop.Controllers
             {
                 for (int i = 0; i < item.Quantity; i++)
                 {
-                    Product prd = await _context.Products.FindAsync(item.ProductId);
+                    Product prd = await _productRepo.GetById(item.ProductId);
                     OrderProduct orderProduct = new OrderProduct()
                     {
                         Order = null,
@@ -80,7 +80,7 @@ namespace FlowerShop.Controllers
 
                 foreach (var productGroup in productGroups)
                 {
-                    var product = await _context.Products.FindAsync(productGroup.ProductId);
+                    var product = await _productRepo.GetById(productGroup.ProductId);
                     var newOrderProduct = new OrderProduct
                     {
                         ProductId = product.Id,
@@ -90,32 +90,10 @@ namespace FlowerShop.Controllers
                     newOrder.OrderProducts.Add(newOrderProduct);
                 }
 
-
-
-
-/*
-                foreach (var oldOrderProduct in oldOrder.OrderProducts)
-                {
-
-                    var product = await _context.Products.FindAsync(oldOrderProduct.Product.Id);
-
-                    var newOrderProduct = new OrderProduct
-                    {
-                        ProductId = oldOrderProduct.Product.Id,
-                        OrderId = newOrder.Id,
-                    };
-
-                    newOrder.OrderProducts.Add(newOrderProduct);
-                    _context.Entry(newOrderProduct).State = EntityState.Added;
-                }*/
-
-                _context.Add(newOrder);
-                //_context.Entry(newOrder).State = EntityState.Detached;
-                await _context.SaveChangesAsync();
+                await _orderRepo.Add(newOrder);
                 TempData["Success"] = "Your order has been confirmed!";
 
                 HttpContext.Session.Remove("Cart");
-
                 return RedirectToAction("Index", "Home");
             }
             TempData["Error"] = "Could not add the product";
