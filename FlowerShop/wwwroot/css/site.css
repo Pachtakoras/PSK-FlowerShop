@@ -16,3 +16,29 @@ html {
 body {
   margin-bottom: 60px;
 }
+
+.card {
+    overflow: hidden;
+    margin: .5rem;
+    padding:0;
+}
+.card-body{
+    padding: .5rem;
+    min-height:70px;
+}
+.card-img-top {
+    height: 17rem;
+    object-fit: cover;
+}
+
+.card-price{
+    margin:.2rem 0 .2rem 0;
+}
+.card-footer {
+    background-color: transparent;
+    border-top: none;
+    display: flex;
+
+    flex-direction: column;
+    align-self: flex-end;
+}

@@ -8,22 +8,27 @@
 <div class="row">
     @foreach (var item in Model)
     {
-        <div class="col-4">
-            <img src="@item.Image" class="img-fluid" alt="" />
-
-            <h4>@item.Name</h4>
-            <div>
-                @Html.Raw(item.Description)
+        <div class="col-4 card text-center" style="width: 18rem; border-radius: 10px;">
+            <img src="@item.Image" class="card-img-top img-fluid" alt="" />
+            <div class="card-body position-relative">
+                <h4 class="card-title">@item.Name</h4>
+                <div class="text-start card-body">
+                    <div>
+                        @Html.Raw(item.Description)
+                    </div>
+                    <p class="card-price text-center fw-bold fs-5 ">
+                        @item.Price.ToString("C2")
+                    </p>
+                </div>
+                @if (User.Identity?.IsAuthenticated ?? false)
+                {
+                    <div class="card-footer">
+                        <p class="mb-0">
+                            <a class="btn btn-primary mx-auto" asp-controller="Cart" asp-action="Add" asp-route-id="@item.Id">Add to Cart</a>
+                        </p>
+                    </div>
+                }
             </div>
-            <p>
-                @item.Price.ToString("C2")
-            </p>
-            @if(User.Identity?.IsAuthenticated ?? false)
-            {
-                <p>
-                    <a class="btn btn-primary" asp-controller="Cart" asp-action="Add" asp-route-id="@item.Id">Add to Cart</a>
-                </p>
-            }
         </div>
 
     }
