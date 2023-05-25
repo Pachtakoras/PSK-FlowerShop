@@ -3,12 +3,23 @@ using FlowerShop.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using PSI_Food_waste.Data;
+using Serilog.Events;
+using Serilog;
+using FlowerShop.Logging;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 builder.Services.AddScoped<FlowerShop.Logging.LogMethod>();
+builder.Host.UseSerilog((context, services, configuration) => configuration
+    .MinimumLevel.Override("Microsoft", LogEventLevel.Warning)
+    .MinimumLevel.Override("Microsoft.EntityFrameworkCore", LogEventLevel.Error)
+    .ReadFrom.Configuration(context.Configuration)
+    .ReadFrom.Services(services)
+    .Enrich.FromLogContext()
+    .WriteTo.Console()
+    .WriteTo.File("Logging/logs.txt", rollingInterval: RollingInterval.Day));
 builder.Services.AddDbContext<FlowerContext>(options =>
 {
     options.UseSqlServer(builder.Configuration.GetConnectionString("DbConnection"));
@@ -41,7 +52,6 @@ builder.Services.Configure<IdentityOptions>(options =>
 
     options.User.RequireUniqueEmail = true;
 });
-
 
 var app = builder.Build();
 
@@ -119,9 +129,22 @@ using (var scope = app.Services.CreateScope())
 }
 
 
+try
+{
+    Log.Information("Starting application...");
 
-app.Run();
+    // Your application configuration code here...
 
+    app.Run();
+}
+catch (Exception ex)
+{
+    Log.Fatal(ex, "An unhandled exception has occurred.");
+}
+finally
+{
+    Log.CloseAndFlush();
+}
 void AddAuthorizationPolicies()
 {
     builder.Services.AddAuthorization(options => {
