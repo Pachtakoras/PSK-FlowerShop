@@ -151,15 +151,8 @@ namespace FlowerShop.Areas.Identity.Pages.Account
                     if (!await _roleManager.RoleExistsAsync("Member"))
                     {
                         var roleResult = await _roleManager.CreateAsync(new IdentityRole("Member"));
-                        if (!roleResult.Succeeded)
-                        {
-                            // Handle role creation failure
-                            // Consider what you want to do if the role can't be created.
-                            // You may want to throw an exception, return an error, or log the issue and continue with a default role or no role.
-                        }
                     }
 
-                    // assign the user to the "User" role
                     await _userManager.AddToRoleAsync(user, "Member");
 
                     var userId = await _userManager.GetUserIdAsync(user);
