@@ -61,6 +61,7 @@ namespace FlowerShop.Controllers
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [ServiceFilter(typeof(LogMethod))]
         public async Task<IActionResult> Create(Order order)
         {
 

@@ -28,7 +28,7 @@ namespace FlowerShop.Controllers
             };
             return View(viewModel);
         }
-
+        [ServiceFilter(typeof(LogMethod))]
         public async Task<IActionResult> Add(long id)
         {
             Product product = await _context.Products.FindAsync(id);
@@ -47,6 +47,7 @@ namespace FlowerShop.Controllers
             TempData["Success"] = "The product has been added!";
             return Redirect(Request.Headers["Referer"].ToString());
         }
+        [ServiceFilter(typeof(LogMethod))]
         public async Task<IActionResult> Decrease(long id)
         {
             List<CartItem> cart = HttpContext.Session.GetJson<List<CartItem>>("Cart");
@@ -70,6 +71,7 @@ namespace FlowerShop.Controllers
             TempData["Success"] = "The product was decreased!";
             return RedirectToAction("Index");
         }
+        [ServiceFilter(typeof(LogMethod))]
         public async Task<IActionResult> Remove(long id)
         {
             List<CartItem> cart = HttpContext.Session.GetJson<List<CartItem>>("Cart");
@@ -87,6 +89,7 @@ namespace FlowerShop.Controllers
             TempData["Success"] = "The product has been Removed!";
             return RedirectToAction("Index");
         }
+        [ServiceFilter(typeof(LogMethod))]
         public IActionResult Clear()
         {
             HttpContext.Session.Remove("Cart");

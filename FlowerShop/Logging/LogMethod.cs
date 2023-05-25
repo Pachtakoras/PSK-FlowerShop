@@ -11,12 +11,12 @@ namespace FlowerShop.Logging
         }
         public void OnActionExecuted(ActionExecutedContext context)
         {
-            _logger.LogInformation("Completed: Page opened: {0}", context.ActionDescriptor.DisplayName);
+            _logger.LogInformation("Completed: Action completed: {0}", context.ActionDescriptor.DisplayName);
         }
 
         public void OnActionExecuting(ActionExecutingContext context)
         {
-            _logger.LogInformation("Start: Opening page: {0}", context.ActionDescriptor.DisplayName);
+            _logger.LogInformation("Start: Action started: {0}", context.ActionDescriptor.DisplayName);
         }
     }
 }
