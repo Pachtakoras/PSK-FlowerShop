@@ -1,6 +1,7 @@
 ﻿using FlowerShop.DataAccess;
 using FlowerShop.Models;
 using FlowerShop.Repositories;
+using Microsoft.EntityFrameworkCore;
 
 namespace FlowerShop.Services
 {
@@ -15,6 +16,21 @@ namespace FlowerShop.Services
         {
             await _context.AddAsync(order);
             await _context.SaveChangesAsync();
+        }
+        public async Task<IEnumerable<Order>> GetbyUserId(string id) 
+        {
+            return await _context.Orders.Where(o => o.CustomerId == id).ToListAsync();
+        }
+
+        public async Task Cancel(long id)
+        {
+            var order = await _context.Orders.FirstOrDefaultAsync(o => o.Id == id);
+            if (order != null)
+            {
+                order.Status = Order.orderStatus.Cancelled.ToString();
+                _context.Update(order);
+                await _context.SaveChangesAsync();
+            }
         }
     }
 }

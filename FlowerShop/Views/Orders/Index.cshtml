@@ -1,0 +1,51 @@
+﻿@model IEnumerable<Order>
+
+@{
+    ViewData["Title"] = "Orders";
+}
+<h1>Orders</h1>
+@if (Model != null)
+{
+    <table class="table">
+        <tr>
+            <th>Order status</th>
+            <th>Delivery option</th>
+            <th>Payment option</th>
+            <th>Item quantity</th>
+            <th>Total price</th>
+            <th>Cancel order</th>
+        </tr>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td class="card-title">@item.Status</td>
+                <td class="card-title">@item.DeliveryOption</td>
+                <td class="card-title">@item.PaymentMethod</td>
+                <td class="card-title">@item.ItemsCount</td>
+                <td class="card-title">@item.PriceTotal.ToString("C2")</td>
+                <td>
+                    @if (item.Status == "New")
+                    {
+                        <form asp-action="Cancel" asp-route-id="@item.Id" method="post">
+                            <button type="submit" class="btn btn-danger btn-sm">Cancel Order</button>
+                        </form>
+                    }
+                </td>
+            </tr>
+        }
+
+        @if (ViewBag.TotalPages > 1)
+        {
+            <div class="justify-content-center d-flex w-100">
+                <pagination page-count="@ViewBag.TotalPages" page-target="/products/@ViewBag.CategorySlug"
+                        page-number="@ViewBag.PageNumber"
+                        page-range="@ViewBag.PageRange">
+                </pagination>
+            </div>
+        }
+    </table>
+}
+else
+{
+    <h3 class="display-4 text-center">You have not made any orders!</h3>
+}

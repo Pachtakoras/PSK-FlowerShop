@@ -43,7 +43,6 @@ namespace FlowerShop.Areas.Admin.Controllers
         {
             ViewBag.Categories = new SelectList(_categoryRepo.GetList(), "Id", "Name", product.CategoryId);
 
-         
             if(ModelState.IsValid)
             {
                 var name = await _productRepo.GetByName(product.Name);

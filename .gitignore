@@ -361,3 +361,5 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
+/FlowerShop/Logging/logs20230525.txt
+/FlowerShop/Logging/logs20230526.txt
