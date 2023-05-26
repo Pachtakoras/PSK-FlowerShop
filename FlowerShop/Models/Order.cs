@@ -4,6 +4,13 @@ namespace FlowerShop.Models
 {
     public class Order
     {
+        public enum orderStatus 
+        {
+            New,
+            Approved,
+            Cancelled,
+            Delivered
+        }
         public long Id { get; set; }
 
 
@@ -21,6 +28,11 @@ namespace FlowerShop.Models
 
         [Range(0.01, 999.00)]
         public decimal PriceTotal { get; set; }
+
+        [EnumDataType(typeof(orderStatus))]
+        public string Status { get; set; }
+        [Timestamp]
+        public byte[]? Timestamp { get; set; }
 
         public Order() { }
     }

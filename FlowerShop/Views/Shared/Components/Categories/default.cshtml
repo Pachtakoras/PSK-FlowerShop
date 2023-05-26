@@ -13,4 +13,14 @@
             </a>
         </li>
     }
+    @{
+        @if(User.Identity?.IsAuthenticated ?? false)
+        {
+            <li class="list-group-item">
+                <a class="nav-link text-dark" asp-controller="Orders" asp-action="Index" asp-route-categorySlug="">
+                    My Orders
+                </a>
+            </li>
+        }
+    }
 </ul>

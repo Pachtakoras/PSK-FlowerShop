@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using System.Diagnostics;
 
 namespace FlowerShop.Controllers
 {
@@ -16,7 +17,7 @@ namespace FlowerShop.Controllers
         private readonly UserManager<ApplicationUser> _UserManager;
         private readonly FlowerContext _context;
         private readonly ILogger _logger;
-	      private readonly IOrderRepo _orderRepo;
+	    private readonly IOrderRepo _orderRepo;
         private readonly IProductRepositoryDecorator _productRepo;
         public CheckoutController(IProductRepositoryDecorator cashingRepo, IOrderRepo orderRepo, SignInManager<ApplicationUser> signInManager, UserManager<ApplicationUser> userManager, ILogger<CheckoutController> logger)
         {
@@ -65,7 +66,17 @@ namespace FlowerShop.Controllers
         [ServiceFilter(typeof(LogMethod))]
         public async Task<IActionResult> Create(Order order)
         {
-
+            var errors = ModelState
+                    .Where(x => x.Value.Errors.Count > 0)
+                    .Select(x => new { x.Key, x.Value.Errors })
+                    .ToArray();
+            foreach (var error in errors)
+            {
+                foreach (var subError in error.Errors)
+                {
+                    Debug.WriteLine($"Property: {error.Key} Error: {subError.ErrorMessage}");
+                }
+            }
             if (ModelState.IsValid)
             {
                 Order oldOrder = HttpContext.Session.GetJson<Order>("Order") ?? new Order();
@@ -77,7 +88,8 @@ namespace FlowerShop.Controllers
                     PaymentMethod = order.PaymentMethod,
                     OrderProducts = new List<OrderProduct>(),
                     ItemsCount = oldOrder.ItemsCount,
-                    PriceTotal = oldOrder.PriceTotal
+                    PriceTotal = oldOrder.PriceTotal,
+                    Status = Order.orderStatus.New.ToString()
                 };
 
                 var productGroups = oldOrder.OrderProducts
