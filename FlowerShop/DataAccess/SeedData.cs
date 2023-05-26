@@ -101,7 +101,7 @@ namespace PSI_Food_waste.Data
                         Name = "Flowers in a white box",
                         Price = 43.99M,
                         Image = "https://shorturl.at/bwzO9",
-                        Description = "Some nice seasoning in there",
+                        Description = "WHy are they on a bench",
                         Category = FlowerBoxes,
                     },
                     new Product
@@ -109,7 +109,7 @@ namespace PSI_Food_waste.Data
                         Name = "Cute butterfly flower box",
                         Price = 43.99M,
                         Image = "https://shorturl.at/pxKP1",
-                        Description = "Some nice seasoning in there",
+                        Description = "A ballin butterfly",
                         Category = FlowerBoxes,
                     },
                     new Product

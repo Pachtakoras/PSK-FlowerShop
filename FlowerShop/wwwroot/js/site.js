@@ -2,6 +2,13 @@
 // for details on configuring this project to bundle and minify static web assets.
 
 // Write your JavaScript code.
+
+function () {
+    // Move "Choose a category" option to the top
+    $("#categoryIdSelect option[value='0']").prependTo("#categoryIdSelect");
+    // Set it as selected
+    $("#categoryIdSelect option[value='0']").prop("selected", true);
+};
 $(function () {
 
     if ($("a.confirmDeletion").length) {
