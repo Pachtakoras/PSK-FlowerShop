@@ -21,6 +21,10 @@ namespace FlowerShop.Services
         {
             return await _context.Orders.Where(o => o.CustomerId == id).ToListAsync();
         }
+        public async Task<IEnumerable<Order>> GetAll()
+        {
+            return await _context.Orders.ToListAsync();
+        }
 
         public async Task Cancel(long id)
         {
@@ -28,6 +32,26 @@ namespace FlowerShop.Services
             if (order != null)
             {
                 order.Status = Order.orderStatus.Cancelled.ToString();
+                _context.Update(order);
+                await _context.SaveChangesAsync();
+            }
+        }
+        public async Task Approve(long id)
+        {
+            var order = await _context.Orders.FirstOrDefaultAsync(o => o.Id == id);
+            if (order != null)
+            {
+                order.Status = Order.orderStatus.Approved.ToString();
+                _context.Update(order);
+                await _context.SaveChangesAsync();
+            }
+        }
+        public async Task SetDelivered(long id)
+        {
+            var order = await _context.Orders.FirstOrDefaultAsync(o => o.Id == id);
+            if (order != null)
+            {
+                order.Status = Order.orderStatus.Delivered.ToString();
                 _context.Update(order);
                 await _context.SaveChangesAsync();
             }
