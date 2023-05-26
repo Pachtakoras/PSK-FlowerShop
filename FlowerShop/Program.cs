@@ -85,8 +85,8 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 var context = app.Services.CreateScope().ServiceProvider.GetRequiredService<FlowerContext>();
-context.Database.EnsureCreated();
-//context.Database.Migrate();
+//context.Database.EnsureCreated();
+context.Database.Migrate();
 SeedData.Initialize(context);
 
 

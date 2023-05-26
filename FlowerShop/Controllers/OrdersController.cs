@@ -46,6 +46,7 @@ namespace FlowerShop.Controllers
                     return RedirectToAction("Index", "Home");
                 }
             }
+            TempData["Success"] = "The order has been cancelled!";
             return RedirectToAction(nameof(Index));
         }
     }

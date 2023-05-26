@@ -44,7 +44,7 @@ namespace PSI_Food_waste.Data
                     {
                         Name = "White Roses",
                         Price = 9.99M,
-                        Image = "https://shorturl.at/kOTY9",
+                        Image = "https://shorturl.at/mCHLN",
                         Description = "White roses, very beautiful, would buy 10/10",
                         Category = Flowers,
                     },

@@ -94,6 +94,7 @@ namespace FlowerShop.Controllers
         public IActionResult Clear()
         {
             HttpContext.Session.Remove("Cart");
+            TempData["Success"] = "The cart has been cleared";
             return Redirect(Request.Headers["Referer"].ToString());
         }
 
