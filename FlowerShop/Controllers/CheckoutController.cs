@@ -78,7 +78,8 @@ namespace FlowerShop.Controllers
                     OrderProducts = new List<OrderProduct>(),
                     ItemsCount = oldOrder.ItemsCount,
                     PriceTotal = oldOrder.PriceTotal,
-                    Status = Order.orderStatus.New.ToString()
+                    Status = Order.orderStatus.New.ToString(),
+                    OrderDate = DateTime.Now
                 };
 
                 var productGroups = oldOrder.OrderProducts
