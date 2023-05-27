@@ -10,6 +10,7 @@ using System.Security.Claims;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
+using static NuGet.Packaging.PackagingConstants;
 
 namespace FlowerShop.Controllers
 {
@@ -25,29 +26,42 @@ namespace FlowerShop.Controllers
             _userManager = userManager;
         }
 
+        //[ServiceFilter(typeof(LogMethod))]
+        //public async Task<IActionResult> Index()
+        //{
+        //    IEnumerable<Order> orders;
+        //    if (User.IsInRole("Admin"))
+        //    {
+        //        orders = await _orderRepo.GetAll();
+                
+        //    }
+        //    else 
+        //    {
+        //        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        //        orders = await _orderRepo.GetbyUserId(userId);
+        //    }
+        //    var orderViewModels = await GetOrderModel(orders);
+        //    return View(orderViewModels);
+        //}
+
         [ServiceFilter(typeof(LogMethod))]
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(DateTime? fromDate, DateTime? toDate)
         {
-            IEnumerable<Order> order;
+            IEnumerable<Order> orders;
             if (User.IsInRole("Admin"))
             {
-                order = await _orderRepo.GetAll();
+                orders = await _orderRepo.GetAll();
+
             }
             else
             {
                 var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-                order = await _orderRepo.GetbyUserId(userId);
+                orders = await _orderRepo.GetbyUserId(userId);
             }
-            return View(order);
-        }
+            orders = GetFilteredOrders(fromDate, toDate, orders);
+            var orderViewModels = await GetOrderModel(orders);
 
-        [Authorize(Roles = "Admin")]
-        [ServiceFilter(typeof(LogMethod))]
-        public async Task<IActionResult> AdminIndex()
-        {
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            IEnumerable<Order> order = await _orderRepo.GetAll();
-            return View(order);
+            return View(orderViewModels);
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -107,6 +121,49 @@ namespace FlowerShop.Controllers
                 }
             }
             return RedirectToAction(nameof(Index));
+        }
+        private IEnumerable<Order> GetFilteredOrders(DateTime? fromDate, DateTime? toDate, IEnumerable<Order> orders) 
+        {
+            if (fromDate.HasValue)
+            {
+                orders = orders.Where(o => o.OrderDate >= fromDate.Value);
+            }
+            if (toDate.HasValue)
+            {
+                orders = orders.Where(o => o.OrderDate <= toDate.Value);
+            }
+            return orders;
+        }
+        private async Task<List<OrderViewModel>> GetOrderModel(IEnumerable<Order> orders) 
+        {
+            var orderViewModels = new List<OrderViewModel>();
+            if (User.IsInRole("Admin"))
+            {
+                orderViewModels = new List<OrderViewModel>();
+                foreach (var order in orders)
+                {
+                    var user = await _userManager.FindByIdAsync(order.CustomerId);
+                    orderViewModels.Add(new OrderViewModel
+                    {
+                        Order = order,
+                        User = user
+                    });
+                }
+            }
+            else
+            {
+                var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                var user = await _userManager.FindByIdAsync(userId);
+                foreach (var order in orders)
+                {
+                    orderViewModels.Add(new OrderViewModel
+                    {
+                        Order = order,
+                        User = user
+                    });
+                }
+            }
+            return orderViewModels;
         }
     }
 }

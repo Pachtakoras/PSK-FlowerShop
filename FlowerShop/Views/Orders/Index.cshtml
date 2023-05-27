@@ -1,4 +1,4 @@
-﻿@model IEnumerable<Order>
+﻿@model IEnumerable<OrderViewModel>
 
 @{
     ViewData["Title"] = "Orders";
@@ -7,14 +7,26 @@
 <h1>Orders</h1>
 @if (Model != null)
 {
+    <form asp-action="Index" method="get">
+        <label for="fromDate">From: </label>
+        <input type="date" id="fromDate" name="fromDate" value="@ViewBag.FromDate" />
+
+        <label for="toDate">To: </label>
+        <input type="date" id="toDate" name="toDate" value="@ViewBag.ToDate" />
+
+        <button type="submit" class="btn btn-primary">Filter</button>
+    </form>
     <table class="table">
         <tr>
             <th>Order status</th>
+            <th>Order date</th>
             <th>Delivery option</th>
             <th>Payment option</th>
+            <th>Address</th>
             <th>Item quantity</th>
             <th>Total price</th>
             @if (IsAdmin){
+                <th>Email</th>
                 <th>Set order status</th>
             }
             else
@@ -25,38 +37,43 @@
         @foreach (var item in Model)
         {
             <tr>
-                <td class="card-title">@item.Status</td>
-                <td class="card-title">@item.DeliveryOption</td>
-                <td class="card-title">@item.PaymentMethod</td>
-                <td class="card-title">@item.ItemsCount</td>
-                <td class="card-title">@item.PriceTotal.ToString("C2")</td>
-                <td>
+                <td class="card-title">@item.Order.Status</td>
+                <td class="card-title">@item.Order.OrderDate.ToString("yyyy-MM-dd")</td>
+                <td class="card-title">@item.Order.DeliveryOption</td>
+                <td class="card-title">@item.Order.PaymentMethod</td>
+                <td class="card-title">@item.User.Address</td>
+                <td class="card-title">@item.Order.ItemsCount</td>
+                <td class="card-title">@item.Order.PriceTotal.ToString("C2")</td>
                     @if (IsAdmin)
                     {
-                        @if (item.Status == "New")
-                        {
-                            <form asp-action="Approve" asp-route-id="@item.Id" method="post">
-                                <button type="submit" class="btn btn-danger btn-sm">Approve</button>
-                                <button type="submit" class="btn btn-danger btn-sm">Cancel Order</button>
-                            </form>
-                        }
-                        @if (item.Status == "Approved")
-                        {
-                            <form asp-action="Delivered" asp-route-id="@item.Id" method="post">
-                                <button type="submit" class="btn btn-danger btn-sm">Delivered</button>
-                            </form>
-                        }
+                        <td class="card-title">@item.User.Email</td>
+                        <td>
+                            @if (item.Order.Status == "New")
+                            {
+                                <form asp-action="Approve" asp-route-id="@item.Order.Id" method="post">
+                                    <button type="submit" class="btn btn-danger btn-sm">Approve</button>
+                                    <button type="submit" class="btn btn-danger btn-sm">Cancel Order</button>
+                                </form>
+                            }
+                            @if (item.Order.Status == "Approved")
+                            {
+                                <form asp-action="Delivered" asp-route-id="@item.Order.Id" method="post">
+                                    <button type="submit" class="btn btn-danger btn-sm">Delivered</button>
+                                </form>
+                            }
+                        </td>
                     }
                     else
                     {
-                        @if (item.Status == "New")
-                        {
-                            <form asp-action="Cancel" asp-route-id="@item.Id" method="post">
-                                <button type="submit" class="btn btn-danger btn-sm">Cancel Order</button>
-                            </form>
-                        }
+                        <td>
+                            @if (item.Order.Status == "New")
+                            {
+                                <form asp-action="Cancel" asp-route-id="@item.Order.Id" method="post">
+                                    <button type="submit" class="btn btn-danger btn-sm">Cancel Order</button>
+                                </form>
+                            }
+                        </td>
                     }
-                </td>
             </tr>
         }
 

@@ -33,6 +33,7 @@ namespace FlowerShop.Models
         public string Status { get; set; }
         [Timestamp]
         public byte[]? Timestamp { get; set; }
+        public DateTime OrderDate { get; set; }
 
         public Order() { }
     }

@@ -30,6 +30,7 @@
     <div class="col-md-4">
         <form asp-action="Create" enctype="multipart/form-data">
             <input type="hidden" name="Status" value="@Order.orderStatus.New.ToString()" />
+            <input type="hidden" name="OrderDate" value="@DateTime.Now" />
             <input type="hidden" value="@Model.Id" asp-for="Id" />
             <input type="hidden" value="@Model.CustomerId" asp-for="CustomerId" />
             <input type="hidden" value="@Model.PriceTotal" asp-for="PriceTotal" />
