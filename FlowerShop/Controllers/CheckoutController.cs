@@ -96,6 +96,7 @@ namespace FlowerShop.Controllers
                     if(product == null)
                     {
                         TempData["Error"] = "Sorry! The product doesn't exist anymore :(";
+                        HttpContext.Session.Remove("Cart");
                         return RedirectToAction("Index", "Home");
                     }
                     var newOrderProduct = new OrderProduct
