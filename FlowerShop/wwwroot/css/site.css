@@ -42,3 +42,10 @@ body {
     flex-direction: column;
     align-self: flex-end;
 }
+.order-item {
+    background-color: #0d6efd;
+    color: white;
+}
+.all-products-list{
+    color: white;
+}

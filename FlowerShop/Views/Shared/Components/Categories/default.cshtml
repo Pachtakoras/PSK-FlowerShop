@@ -1,13 +1,13 @@
 ﻿@model IEnumerable<Category>
 <ul class="list-group">
-    <li class="list-group-item">
-        <a class="nav-link text-dark" asp-controller="Products" asp-action="Index" asp-route-categorySlug="">
+    <li class="list-group-item all-products-list" style="background-color:#198754;">
+        <a class="nav-link text-white" asp-controller="Products" asp-action="Index" asp-route-categorySlug="">
             All Products
         </a>
     </li>
     @foreach (var item in Model)
     {
-        <li class="list-group-item">
+        <li class="list-group-item ">
             <a class="nav-link text-dark" asp-controller="Products" asp-action="Index" asp-route-categorySlug="@item.Name">
                @item.Name
             </a>
@@ -18,14 +18,14 @@
         {
             @if (User.IsInRole("Admin")) 
             {
-                <li class="list-group-item">
-                    <a class="nav-link text-dark" asp-controller="Orders" asp-action="Index" asp-route-categorySlug="">Orders</a>
+                <li class="list-group-item order-item">
+                    <a class="nav-link text-white" asp-controller="Orders" asp-action="Index" asp-route-categorySlug="">Orders</a>
                 </li>
             }
             else
             {
-                <li class="list-group-item">
-                    <a class="nav-link text-dark" asp-controller="Orders" asp-action="Index" asp-route-categorySlug="">My Orders</a>
+                <li class="list-group-item order-item">
+                    <a class="nav-link text-white" asp-controller="Orders" asp-action="Index" asp-route-categorySlug="">My Orders</a>
                 </li>
             }
         }

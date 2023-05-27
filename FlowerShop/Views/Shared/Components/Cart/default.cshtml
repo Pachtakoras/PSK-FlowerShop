@@ -4,7 +4,7 @@
     <p>Items in cart : <span class="badge badge-primary">@Model.ItemCount</span></p>
     <p>Total: <b>@Model.TotalAmount.ToString("C2")</b></p>
     <a asp-controller="Cart" asp-action="Index" class="btn btn-primary">View Cart</a>
-    <a asp-controller="Cart" asp-action="Clear" class="btn btn-danger mb-2">Clear Cart</a>
+    <a asp-controller="Cart" asp-action="Clear" class="btn btn-danger">Clear Cart</a>
 }
 else
 {

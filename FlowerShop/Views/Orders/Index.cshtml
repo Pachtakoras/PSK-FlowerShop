@@ -17,9 +17,9 @@
         <button type="submit" class="btn btn-primary">Filter</button>
     </form>
     <table class="table">
-        <tr>
-            <th>Order status</th>
-            <th>Order date</th>
+        <tr class="order-view">
+            <th class="text-nowrap">Order status</th>
+            <th class="text-nowrap">Order date</th>
             <th>Delivery option</th>
             <th>Payment option</th>
             <th>Address</th>
@@ -28,7 +28,7 @@
             @if (IsAdmin){
                 <th>Email</th>
                 <th>View order</th>
-                <th>Set order status</th>
+                <th>Change status</th>
             }
             else
             {
@@ -53,7 +53,7 @@
                 <td>
                     <form asp-action="ViewOrderProducts" asp-controller="OrderProduct" method="post">
                         <input type="hidden" name="OrderId" value="@item.Order.Id" />
-                        <button type="submit" class="btn btn-primary">View Order</button>
+                        <button type="submit" class="btn btn-primary m-1">View</button>
                     </form>
                 </td>
                 <td>
@@ -63,16 +63,16 @@
                             @if (item.Order.Status == "New")
                             {
                                 <form asp-action="Approve" asp-route-id="@item.Order.Id" method="post">
-                                    <button type="submit" class="btn btn-danger btn-sm">Approve</button>
+                                <button type="submit" class="btn btn-success btn-sm m-1">Approve</button>
                                 </form>
                                 <form asp-action="Cancel" asp-route-id="@item.Order.Id" method="post">
-                                    <button type="submit" class="btn btn-danger btn-sm">Cancel</button>
+                                <button type="submit" class="btn btn-danger btn-sm m-1">Cancel</button>
                                 </form>
                             }
                             @if (item.Order.Status == "Approved")
                             {
                                 <form asp-action="Delivered" asp-route-id="@item.Order.Id" method="post">
-                                    <button type="submit" class="btn btn-danger btn-sm">Delivered</button>
+                                    <button type="submit" class="btn btn-danger btn-sm m-1">Delivered</button>
                                 </form>
                             }
                     }
@@ -81,7 +81,7 @@
                             @if (item.Order.Status == "New")
                             {
                                 <form asp-action="Cancel" asp-route-id="@item.Order.Id" method="post">
-                                    <button type="submit" class="btn btn-danger btn-sm">Cancel</button>
+                                    <button type="submit" class="btn btn-danger btn-sm m-1">Cancel</button>
                                 </form>
                             }
                     }
