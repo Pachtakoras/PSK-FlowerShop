@@ -49,6 +49,14 @@ builder.Services.AddTransient<IProductRepositoryDecorator>(provider =>
     return new CashingProductRepository(repository, cache);
 });
 
+builder.Services.AddTransient<IOrderProductRepo, OrderProductRepo>();
+builder.Services.AddTransient<IProductRepositoryDecorator>(provider =>
+{
+    var repository = provider.GetRequiredService<IProductRepo>();
+    var cache = provider.GetRequiredService<IMemoryCache>();
+    return new CashingProductRepository(repository, cache);
+});
+
 
 builder.Services.AddRazorPages();
 builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
@@ -93,9 +101,24 @@ SeedData.Initialize(context);
 
 
 app.MapControllerRoute(
+    name: "cart",
+    pattern: "/Cart",
+    defaults: new { controller = "Cart", action = "Index" });
+
+app.MapControllerRoute(
     name: "products",
     pattern: "/products/{categorySlug?}",
     defaults: new { controller = "Products", action = "Index" });
+
+app.MapControllerRoute(
+    name: "orders",
+    pattern: "/Orders",
+    defaults: new { controller = "Orders", action = "Index" });
+
+app.MapControllerRoute(
+    name: "orderProducts",
+    pattern: "/OrderProduct/ViewOrderProducts",
+    defaults: new { controller = "OrderProduct", action = "ViewOrderProducts" });
 
 app.MapControllerRoute(
     name: "Areas",
