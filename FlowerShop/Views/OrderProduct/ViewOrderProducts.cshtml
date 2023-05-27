@@ -1,0 +1,35 @@
+﻿@model IEnumerable<OrderProduct>
+@{
+    ViewData["Title"] = "Order";
+}
+<h1>Order</h1>
+@if (Model != null)
+{
+    decimal grandTotal = 0;
+    <table class="table">
+        <tr>
+            <th>Product</th>
+            <th>Quantity</th>
+            <th>Price</th>
+        </tr>
+        @foreach (var item in @Model)
+        {
+            <tr>
+                <td>@item.Product.Name</td>
+                <td>@item.Quantity</td>
+                <td>@((item.Product.Price * @item.Quantity).ToString("C2"))</td>
+            </tr>
+            grandTotal += item.Product.Price * @item.Quantity;
+        }
+        <tr class="text-right fw-bold" colspan="3">
+            <td></td>
+            <td>Grand Total:</td>
+            <td>@grandTotal.ToString("C2")</td>
+        </tr>
+    </table>
+}
+else
+{
+    <h3 class="display-4 text-center">Could not find order</h3>
+}
+<a href="javascript:history.back()" class="btn btn-primary">Back</a>
