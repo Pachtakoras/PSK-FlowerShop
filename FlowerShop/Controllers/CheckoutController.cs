@@ -31,6 +31,10 @@ namespace FlowerShop.Controllers
         public async Task<IActionResult> Index()
         {
             List<CartItem> cart = HttpContext.Session.GetJson<List<CartItem>>("Cart") ?? new List<CartItem>();
+            if(cart.Count == 0)
+            {
+                return RedirectToAction("Index", "Cart");
+            }
             List<OrderProduct> OrderProducts = new List<OrderProduct>();
             decimal totalPrice = 0;
             foreach (var item in cart)
@@ -69,7 +73,7 @@ namespace FlowerShop.Controllers
             if (ModelState.IsValid)
             {
                 Order oldOrder = HttpContext.Session.GetJson<Order>("Order") ?? new Order();
-
+                
                 Order newOrder = new Order
                 {
                     CustomerId = oldOrder.CustomerId,
@@ -88,7 +92,12 @@ namespace FlowerShop.Controllers
 
                 foreach (var productGroup in productGroups)
                 {
-                    var product = await _productRepo.GetById(productGroup.ProductId);
+                    var product = await _productRepo.GetByIdNotCashed(productGroup.ProductId);
+                    if(product == null)
+                    {
+                        TempData["Error"] = "Sorry! The product doesn't exist anymore :(";
+                        return RedirectToAction("Index", "Home");
+                    }
                     var newOrderProduct = new OrderProduct
                     {
                         ProductId = product.Id,
