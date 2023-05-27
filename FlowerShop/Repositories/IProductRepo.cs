@@ -9,13 +9,15 @@ namespace FlowerShop.Repositories
 
         Task<Product> GetById(long id);
 
+        Task<Product> GetByIdNotCashed(long id);
+
         Task<Product> GetWithCategory(long id);
 
         Task<Product> GetByName(string name);
 
         Task Add(Product product);
 
-        Task Update(Product product);
+        void Update(Product product);
 
         Task Delete(Product product);
 

@@ -39,6 +39,10 @@ namespace FlowerShop.Services
         {
             return await _context.Products.FindAsync(id);
         }
+        public async Task<Product> GetByIdNotCashed(long id)
+        {
+            return await _context.Products.FindAsync(id);
+        }
         public async Task<Product> GetByName(string name)
         {
             return await _context.Products.FirstOrDefaultAsync(p => p.Name == name);
@@ -52,11 +56,12 @@ namespace FlowerShop.Services
             await _context.Products.AddAsync(product);
             await _context.SaveChangesAsync();
         }
-        public async Task Update(Product product)
+        public void Update(Product product)
         {
             _context.Products.Update(product);
-            await _context.SaveChangesAsync();
+            _context.SaveChanges();
         }
+
         public async Task Delete(Product product)
         {
             _context.Remove(product);

@@ -32,6 +32,10 @@ namespace FlowerShop.Services
         {
             return await _decorated.GetProductsByPageAsync(pageNumber, pageSize);
         }
+        public async Task<Product> GetByIdNotCashed(long id)
+        {
+            return await _decorated.GetByIdNotCashed(id);
+        }
         public async Task<Product?> GetById(long id)
         {
             string key = $"product-{id}";
@@ -55,9 +59,15 @@ namespace FlowerShop.Services
         {
             await _decorated.Add(product);
         }
-        public async Task Update(Product product)
+        public void Update(Product product)
         {
-            await _decorated.Update(product);
+            ClearCache(product.Id);
+            _decorated.Update(product);
+        }
+        public void ClearCache(long id)
+        {
+            string key = $"product-{id}";
+            _memoryCache.Remove(key);
         }
         public async Task Delete(Product product)
         {
