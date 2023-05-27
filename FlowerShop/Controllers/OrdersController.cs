@@ -77,7 +77,7 @@ namespace FlowerShop.Controllers
                 catch (DbUpdateConcurrencyException)
                 {
                     TempData["Error"] = "Could not cancel order";
-                    return RedirectToAction("Index", "Home");
+                    return RedirectToAction("Index", "Orders");
                 }
             }
             return RedirectToAction(nameof(Index));
@@ -97,7 +97,7 @@ namespace FlowerShop.Controllers
                 catch (DbUpdateConcurrencyException)
                 {
                     TempData["Error"] = "Could not approve order";
-                    return RedirectToAction("Index", "Home");
+                    return RedirectToAction("Index", "Orders");
                 }
             }
             return RedirectToAction(nameof(Index));
@@ -117,7 +117,7 @@ namespace FlowerShop.Controllers
                 catch (DbUpdateConcurrencyException)
                 {
                     TempData["Error"] = "Could not set delivered to order";
-                    return RedirectToAction("Index", "Home");
+                    return RedirectToAction("Index", "Orders");
                 }
             }
             return RedirectToAction(nameof(Index));
